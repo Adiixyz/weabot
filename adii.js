@@ -20,7 +20,7 @@ moment.tz.setDefault('Asia/Jakarta').locale("id")
 let bhs = settings.lang
 let prefix = settings.prefix
 
-module.exports = msgHndlr = async (BarBar, mek) => {
+module.exports = msgHndlr = async (ady, mek) => {
     try {
         const { from, sender, pushname, body, quoted, timestamp, type, isGroup, isMedia, id, fromMe, getMedia, mentions } = mek
         const help = new lang[bhs](prefix)
@@ -29,14 +29,14 @@ module.exports = msgHndlr = async (BarBar, mek) => {
         const isCmd = body && body.startsWith(prefix) ? true : false
         const args = body ? body.trim().split(/ +/).slice(1) : []
         const time = moment(timestamp * 1000).format("DD/MM/YY HH:mm:ss")
-        const groupMetadata = isGroup ? await BarBar.groupMetadata(from) : ""
+        const groupMetadata = isGroup ? await ady.groupMetadata(from) : ""
         const groupId = isGroup ? groupMetadata.id : ""
         const groupName = isGroup ? groupMetadata.subject : ""
-        const groupAdmins = isGroup ? await BarBar.getGroupAdmins(groupId) : []
+        const groupAdmins = isGroup ? await ady.getGroupAdmins(groupId) : []
         const groupMembers = isGroup ? groupMetadata.participants : []
-        const botIsAdminGroup = isGroup ? groupAdmins.includes(BarBar.user.jid) : false
+        const botIsAdminGroup = isGroup ? groupAdmins.includes(ady.user.jid) : false
 
-        //if (BarBar.captcha && BarBar.captcha[sender] && isGroup && type === "buttonsResponseMessage") captcha.handleCaptcha(BarBar, mek)
+        //if (ady.captcha && BarBar.captcha[sender] && isGroup && type === "buttonsResponseMessage") captcha.handleCaptcha(BarBar, mek)
 
         const isQuotedImage = quoted && quoted.type === MessageType.image
         const isQuotedVideo = quoted && quoted.type === MessageType.video
@@ -56,10 +56,11 @@ module.exports = msgHndlr = async (BarBar, mek) => {
         switch (cmd) {
             /* -------> [ Help and Menu ] <-------*/
             case "help":
-                return BarBar.sendListMsg(from, help.help(pushname), "Menu", help.menuList())
+            case "menu":
+                return ady.sendListMsg(from, help.help(pushname), "Menu", help.menuList())
 
             case "ping":
-                return BarBar.sendText(from, "Pong!!")
+                return ady.sendText(from, "Pong!!")
             /* --------> [ End ] <-----------*/
 
             /* -------> [ Owner ] <-----------*/
@@ -68,7 +69,7 @@ module.exports = msgHndlr = async (BarBar, mek) => {
                 prefix = args[0]
                 settings.prefix = prefix
                 write("./src/settings.json", JSON.stringify(settings, null, 4))
-                return BarBar.sendText(from, `Prefix replaced to : ${prefix}`)
+                return ady.sendText(from, `Prefix replaced to : ${prefix}`)
 
             case "setlang":
                 if (!isOwner || args.length === 0) return
@@ -78,7 +79,7 @@ module.exports = msgHndlr = async (BarBar, mek) => {
                         bhs = args[0].toLowerCase()
                         settings.lang = bhs
                         write("./src/settings.json", JSON.stringify(settings, null, 4))
-                        return BarBar.sendText(from, "Done")
+                        return ady.sendText(from, "Done")
                     default:
                         return
                 }
@@ -94,7 +95,7 @@ module.exports = msgHndlr = async (BarBar, mek) => {
                     opt.name = su[0]
                     opt.author = su[1]
                     opt.categories = su.length > 2 ? [su[2]] : [""]
-                    return await sticker.wm(BarBar, mek, help.err(cmd).sticker, opt)
+                    return await sticker.wm(ady, mek, help.err(cmd).sticker, opt)
                 } else if ((isMedia && type === MessageType.image || isQuotedImage) || (isMedia && type === MessageType.video || isQuotedVideo)) {
                     return await sticker.basic(BarBar, mek, help.err(cmd).sticker)
                 }
@@ -103,22 +104,22 @@ module.exports = msgHndlr = async (BarBar, mek) => {
             case "stikerburn":
             case "stickerburn":
             case "sburn":
-                if (isMedia && type === MessageType.image || isQuotedImage) return await sticker.burning(BarBar, mek, anteicodes, help.err(cmd).sticker)
+                if (isMedia && type === MessageType.image || isQuotedImage) return await sticker.burning(ady, mek, anteicodes, help.err(cmd).sticker)
                 return mek.reply(help.err(cmd).sticker[0])
 
             case "stikerlight":
             case "stickerlight":
             case "slight":
-                if (isMedia && type === MessageType.image || isQuotedImage) return await sticker.lightning(BarBar, mek, anteicodes, help.err(cmd).sticker)
+                if (isMedia && type === MessageType.image || isQuotedImage) return await sticker.lightning(ady, mek, anteicodes, help.err(cmd).sticker)
                 return mek.reply(help.err(cmd).sticker[0])
 
             case "ttp":
-                if (quoted && quoted.body) return sticker.ttp(BarBar, mek, quoted.body, anteicodes, help.err(cmd).sticker)
+                if (quoted && quoted.body) return sticker.ttp(ady, mek, quoted.body, anteicodes, help.err(cmd).sticker)
                 if (args.length === 0) return mek.reply(help.err(cmd).sticker[1])
                 return await sticker.ttp(BarBar, mek, args.join(" "), anteicodes, help.err(cmd).sticker)
 
             case "attp":
-                if (quoted && quoted.body) return sticker.attp(BarBar, mek, quoted.body, anteicodes, help.err(cmd).sticker)
+                if (quoted && quoted.body) return sticker.attp(ady, mek, quoted.body, anteicodes, help.err(cmd).sticker)
                 if (args.length === 0) return mek.reply(help.err(cmd).sticker[1])
                 return await sticker.attp(BarBar, mek, args.join(" "), anteicodes, help.err(cmd).sticker)
             /* ------> [ End ] <------ */
@@ -127,8 +128,8 @@ module.exports = msgHndlr = async (BarBar, mek) => {
             case "tiktok":
                 if (args.length === 0) return mek.reply(help.err(cmd).deel)
                 if (isUrl(args[0]) && args[0].includes("tiktok.com")) {
-                    isGroup ? mek.reply(help.wait()) : BarBar.sendText(from, help.wait())
-                    return await tiktok.tiktod(BarBar, mek, args[0], anteicodes, help)
+                    isGroup ? mek.reply(help.wait()) : ady.sendText(from, help.wait())
+                    return await tiktok.tiktod(ady, mek, args[0], anteicodes, help)
                 } else {
                     return mek.reply(help.err().invalid)
                 }
@@ -136,8 +137,8 @@ module.exports = msgHndlr = async (BarBar, mek) => {
             case "tikvid":
                 if (args.length === 0) return mek.reply(help.err(cmd).deel)
                 if (isUrl(args[0]) && args[0].includes("tiktok.com")) {
-                    isGroup ? mek.reply(help.wait()) : BarBar.sendText(from, help.wait())
-                    return await tiktok.tikvid(BarBar, mek, args[0], anteicodes, help)
+                    isGroup ? mek.reply(help.wait()) : ady.sendText(from, help.wait())
+                    return await tiktok.tikvid(ady, mek, args[0], anteicodes, help)
                 } else {
                     return mek.reply(help.err().invalid)
                 }
@@ -145,8 +146,8 @@ module.exports = msgHndlr = async (BarBar, mek) => {
             case "tikaud":
                 if (args.length === 0) return mek.reply(help.err(cmd).deel)
                 if (isUrl(args[0]) && args[0].includes("tiktok.com")) {
-                    isGroup ? mek.reply(help.wait()) : BarBar.sendText(from, help.wait())
-                    return await tiktok.tikaud(BarBar, mek, args[0], anteicodes, help)
+                    isGroup ? mek.reply(help.wait()) : ady.sendText(from, help.wait())
+                    return await tiktok.tikaud(ady, mek, args[0], anteicodes, help)
                 } else {
                     return mek.reply(help.err().invalid)
                 }
@@ -159,8 +160,8 @@ module.exports = msgHndlr = async (BarBar, mek) => {
             case "yt":
                 if (args.length === 0) return mek.reply(help.err(cmd).deel)
                 if (isUrl(args[0]) && args[0].includes("youtu")) {
-                    isGroup ? mek.reply(help.wait()) : BarBar.sendText(from, help.wait())
-                    return await yt.yt(BarBar, mek, args[0], anteicodes, help)
+                    isGroup ? mek.reply(help.wait()) : ady.sendText(from, help.wait())
+                    return await yt.yt(ady, mek, args[0], anteicodes, help)
                 } else {
                     return mek.reply(help.err().invalid)
                 }
@@ -169,8 +170,8 @@ module.exports = msgHndlr = async (BarBar, mek) => {
             case "ytmp3":
                 if (args.length === 0) return mek.reply(help.err(cmd).deel)
                 if (isUrl(args[0]) && args[0].includes("youtu")) {
-                    isGroup ? mek.reply(help.wait()) : BarBar.sendText(from, help.wait())
-                    return await yt.yta(BarBar, mek, args[0], anteicodes, help)
+                    isGroup ? mek.reply(help.wait()) : ady.sendText(from, help.wait())
+                    return await yt.yta(ady, mek, args[0], anteicodes, help)
                 } else {
                     return mek.reply(help.err().invalid)
                 }
@@ -179,8 +180,8 @@ module.exports = msgHndlr = async (BarBar, mek) => {
             case "ytmp4":
                 if (args.length === 0) return mek.reply(help.err(cmd).deel)
                 if (isUrl(args[0]) && args[0].includes("youtu")) {
-                    isGroup ? mek.reply(help.wait()) : BarBar.sendText(from, help.wait())
-                    return await yt.ytv(BarBar, mek, args[0], anteicodes, help)
+                    isGroup ? mek.reply(help.wait()) : ady.sendText(from, help.wait())
+                    return await yt.ytv(ady, mek, args[0], anteicodes, help)
                 } else {
                     return mek.reply(help.err().invalid)
                 }
@@ -189,16 +190,16 @@ module.exports = msgHndlr = async (BarBar, mek) => {
                 if (args.length === 0) return mek.reply(help.err(cmd).deel)
                 if (isUrl(args[0]) && args[0].includes("xnxx")) {
                     if (args.length === 1) {
-                        isGroup ? mek.reply(help.wait()) : BarBar.sendText(from, help.wait())
-                        return await xnxx.xnxx(BarBar, mek, args[0], anteicodes, help)
+                        isGroup ? mek.reply(help.wait()) : ady.sendText(from, help.wait())
+                        return await xnxx.xnxx(ady, mek, args[0], anteicodes, help)
                     } else if (args.length === 2) {
                         switch (args[1].toLowerCase()) {
                             case "sd":
-                                isGroup ? mek.reply(help.wait()) : BarBar.sendText(from, help.wait())
-                                return await xnxx.sd(BarBar, mek, args[0], anteicodes, help)
+                                isGroup ? mek.reply(help.wait()) : ady.sendText(from, help.wait())
+                                return await xnxx.sd(ady, mek, args[0], anteicodes, help)
                             case "hd":
-                                isGroup ? mek.reply(help.wait()) : BarBar.sendText(from, help.wait())
-                                return await xnxx.hd(BarBar, mek, args[0], anteicodes, help)
+                                isGroup ? mek.reply(help.wait()) : ady.sendText(from, help.wait())
+                                return await xnxx.hd(ady, mek, args[0], anteicodes, help)
                             default:
                                 return
                         }
