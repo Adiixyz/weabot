@@ -9,8 +9,11 @@ class ind {
     }
 
     help(pushname) {
-        return `Halo ${pushname}
-Fitur yang tersedia pada bot ini
+        return `[ADIIBOT]
+
+Hi ${pushname} 👋
+
+Im Whatsapp Bot With Simple Features
         `.trim()
     }
 
@@ -18,66 +21,66 @@ Fitur yang tersedia pada bot ini
         return [
             {title: "Downloader", rows: [
                 {
-                    title: "TikTok",
+                    title: "TikTok Downloader",
                     description: "Mengunduh audio/video dari tiktok tanpa watermark",
                     rowId: `${this.prefix}tiktok`
                 },
                 {
-                    title: "YouTube",
+                    title: "YouTube Downloader",
                     description: "Mengunduh audio/video dari YouTube",
                     rowId: `${this.prefix}yt`
                 },
                 {
-                    title: "Twitter",
+                    title: "Twitter Downloader",
                     description: "Mengunduh foto/video dari twitter",
                     rowId: `${this.prefix}tweet`
                 },
                 {
-                    title: "XnXx",
-                    description: "Mengunduh video dari xnxx",
+                    title: "XNXX Downloader",
+                    description: "weh haram:v",
                     rowId: `${this.prefix}xnxx`
                 }
             ]},
             {title: "Stalker", rows: [
                 {
-                    title: "Instagram",
+                    title: "Instagram Stalker",
                     description: "Menampilkan profile instagram seseorang berdasarkan nama pengguna",
                     rowId: `${this.prefix}igstalk`
                 },
                 {
-                    title: "Twitter",
+                    title: "Twitter Stalker",
                     description: "Menampilkan profile twitter seseorang berdasarkan nama pengguna",
                     rowId: `${this.prefix}twstalk`
                 },
                 {
-                    title: "TikTok",
+                    title: "TikTok Stalker",
                     description: "Menampilkan profile tiktok seseorang berdasarkan nama pengguna",
                     rowId: `${this.prefix}ttstalk`
                 }
             ]},
             {title: "Sticker", rows: [
                 {
-                    title: "Stiker",
+                    title: "Image To Sticker",
                     description: "Mengubah foto menjadi stiker",
                     rowId: `${this.prefix}s`
                 },
                 {
-                    title: "Stiker Api",
+                    title: "Sticker Fire",
                     description: "Mengubah foto menjadi stiker dengan efek terbakar api",
                     rowId: `${this.prefix}sburn`
                 },
                 {
-                    title: "Stiker Petir",
+                    title: "Sticker Lighting",
                     description: "Mengubah foto menjadi stiker dengan efek sambaran petir",
                     rowId: `${this.prefix}slight`
                 },
                 {
-                    title: "TtS",
+                    title: "Text To Sticker",
                     description: "Mengubah teks menjadi stiker",
                     rowId: `${this.prefix}ttp`
                 },
                 {
-                    title: "TtaS",
+                    title: "Text To Sticker (animated)",
                     description: "Mengubah teks menjadi stiker animasi (bergerak)",
                     rowId: `${this.prefix}attp`
                 }
@@ -108,18 +111,27 @@ Fitur yang tersedia pada bot ini
     }
 
     wait() {
-        return "𓊈BAIKLAH𓊉 Silahkan tunggu ......"
+        return "Tunggu sayang:v"
     }
 
     footer() {
-        return `Tombol tidak muncul di pesan anda?
-Masukkan perintah ini
-*${this.prefix}tikaud url* | untuk mengambil musik saja dari tiktok
-*${this.prefix}tikvid url* | untuk mengambil video saja dari tiktok
-*${this.prefix}yta url* | untuk mengambil musik saja dari youtube
-*${this.prefix}ytv url* | untuk mengambil video saja dari youtube
-*${this.prefix}xnxx url sd* | untuk mengambil video dari xnxx dengan kualitas rendah
-*${this.prefix}xnxx url hd* | untuk mengambil video dari xnxx dengan kualitas tinggi`
+        return `If Button Not Showed
+
+${this.prefix}tiktok
+${this.prefix}yt
+${this.prefix}tweet
+${this.prefix}xnxx
+${this.prefix}igstalk
+${this.prefix}twstalk
+${this.prefix}ttstalk
+${this.prefix}sticker
+${this.prefix}sburn
+${this.prefix}slight
+${this.prefix}ttp
+${this.prefix}attp
+
+©by Adii
+`
     }
 }
 
