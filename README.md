@@ -1,7 +1,7 @@
 ### Clone this repository
 ```bash
-> git clone https://github.com/MhankBarBar/weabot
-> cd weabot
+> git clone https://github.com/IAmAdyy/botwea
+> cd botwea
 ```
 
 ### Installation (Termux/Ubuntu/Linux)
